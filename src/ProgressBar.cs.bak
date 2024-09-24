@@ -1,0 +1,255 @@
+using System;
+using System.Drawing;
+using System.Windows.Forms;
+using System.ComponentModel;
+using System.Drawing.Drawing2D;
+
+namespace VistaStyleProgressBar
+{
+    [DefaultEvent("ValueChanged")]
+    public class CustomProgressBar : UserControl 
+    {
+        private int mValue = 0;
+        private int mMaxValue = 100;
+        private int mMinValue = 0;
+        private Color mBarColor = Color.Green;
+        private Color mBackgroundColor = Color.FromArgb(201, 201, 201);
+        private bool mAnimate = true;
+        private System.Windows.Forms.Timer mGlowAnimation;
+
+        public CustomProgressBar()
+        {
+            InitializeComponent();
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.DoubleBuffer, true);
+            mGlowAnimation = new System.Windows.Forms.Timer { Interval = 15 };
+            mGlowAnimation.Tick += mGlowAnimation_Tick;
+        }
+
+        private void InitializeComponent()
+        {
+            this.Name = "CustomProgressBar";
+            this.Size = new System.Drawing.Size(264, 32);
+            this.Paint += new PaintEventHandler(CustomProgressBar_Paint);
+        }
+
+        [Category("Value"), DefaultValue(0)]
+        public int Value
+        {
+            get => mValue;
+            set 
+            { 
+                if (value > MaxValue || value < MinValue) return;
+                mValue = value;
+                Invalidate();
+                ValueChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        [Category("Value"), DefaultValue(100)]
+        public int MaxValue
+        {
+            get => mMaxValue;
+            set 
+            { 
+                mMaxValue = value; 
+                if (Value > MaxValue) Value = MaxValue;
+                Invalidate();
+            }
+        }
+
+        [Category("Value"), DefaultValue(0)]
+        public int MinValue
+        {
+            get => mMinValue;
+            set 
+            {
+                mMinValue = value; 
+                if (Value < MinValue) Value = MinValue;
+                Invalidate();
+            }
+        }
+
+        [Category("Appearance")]
+        public Color BarColor
+        {
+            get => mBarColor;
+            set { mBarColor = value; Invalidate(); }
+        }
+
+        [Category("Appearance")]
+        public Color BackgroundColor
+        {
+            get => mBackgroundColor;
+            set { mBackgroundColor = value; Invalidate(); }
+        }
+
+        [Category("Behavior")]
+        public bool Animate
+        {
+            get => mAnimate;
+            set
+            {
+                mAnimate = value;
+                if (value) mGlowAnimation.Start();
+                else mGlowAnimation.Stop();
+            }
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            DrawProgressBar(e.Graphics);
+        }
+
+        private void DrawProgressBar(Graphics g)
+        {
+            Rectangle rect = ClientRectangle;
+            g.FillRectangle(new SolidBrush(BackgroundColor), rect);
+            
+            int width = (int)((Value - MinValue) / (float)(MaxValue - MinValue) * rect.Width);
+            Rectangle progressRect = new Rectangle(rect.X, rect.Y, width, rect.Height);
+            g.FillRectangle(new SolidBrush(BarColor), progressRect);
+        }
+
+        private void CustomProgressBar_Paint(object sender, PaintEventArgs e)
+        {
+            DrawProgressBar(e.Graphics);
+        }
+
+        private void mGlowAnimation_Tick(object sender, EventArgs e)
+        {
+            if (Animate)
+            {
+                // Add animation logic here
+                Invalidate();
+            }
+        }
+
+        public event EventHandler ValueChanged;
+    }
+}
+
+namespace VistaStyleProgressBar
+{
+    [DefaultEvent("ValueChanged")]
+    public class CustomProgressBar : UserControl 
+    {
+        private int mValue = 0;
+        private int mMaxValue = 100;
+        private int mMinValue = 0;
+        private Color mBarColor = Color.Green;
+        private Color mBackgroundColor = Color.FromArgb(201, 201, 201);
+        private bool mAnimate = true;
+        private System.Windows.Forms.Timer mGlowAnimation;
+
+        public CustomProgressBar()
+        {
+            InitializeComponent();
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.DoubleBuffer, true);
+            mGlowAnimation = new System.Windows.Forms.Timer { Interval = 15 };
+            mGlowAnimation.Tick += mGlowAnimation_Tick;
+        }
+
+        private void InitializeComponent()
+        {
+            this.Name = "CustomProgressBar";
+            this.Size = new System.Drawing.Size(264, 32);
+            this.Paint += new PaintEventHandler(CustomProgressBar_Paint);
+        }
+
+        [Category("Value"), DefaultValue(0)]
+        public int Value
+        {
+            get => mValue;
+            set 
+            { 
+                if (value > MaxValue || value < MinValue) return;
+                mValue = value;
+                Invalidate();
+                ValueChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        [Category("Value"), DefaultValue(100)]
+        public int MaxValue
+        {
+            get => mMaxValue;
+            set 
+            { 
+                mMaxValue = value; 
+                if (Value > MaxValue) Value = MaxValue;
+                Invalidate();
+            }
+        }
+
+        [Category("Value"), DefaultValue(0)]
+        public int MinValue
+        {
+            get => mMinValue;
+            set 
+            {
+                mMinValue = value; 
+                if (Value < MinValue) Value = MinValue;
+                Invalidate();
+            }
+        }
+
+        [Category("Appearance")]
+        public Color BarColor
+        {
+            get => mBarColor;
+            set { mBarColor = value; Invalidate(); }
+        }
+
+        [Category("Appearance")]
+        public Color BackgroundColor
+        {
+            get => mBackgroundColor;
+            set { mBackgroundColor = value; Invalidate(); }
+        }
+
+        [Category("Behavior")]
+        public bool Animate
+        {
+            get => mAnimate;
+            set
+            {
+                mAnimate = value;
+                if (value) mGlowAnimation.Start();
+                else mGlowAnimation.Stop();
+            }
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            DrawProgressBar(e.Graphics);
+        }
+
+        private void DrawProgressBar(Graphics g)
+        {
+            Rectangle rect = ClientRectangle;
+            g.FillRectangle(new SolidBrush(BackgroundColor), rect);
+            
+            int width = (int)((Value - MinValue) / (float)(MaxValue - MinValue) * rect.Width);
+            Rectangle progressRect = new Rectangle(rect.X, rect.Y, width, rect.Height);
+            g.FillRectangle(new SolidBrush(BarColor), progressRect);
+        }
+
+        private void CustomProgressBar_Paint(object sender, PaintEventArgs e)
+        {
+            DrawProgressBar(e.Graphics);
+        }
+
+        private void mGlowAnimation_Tick(object sender, EventArgs e)
+        {
+            if (Animate)
+            {
+                // Add animation logic here
+                Invalidate();
+            }
+        }
+
+        public event EventHandler ValueChanged;
+    }
+}

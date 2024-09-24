@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using Microsoft.Data.SqlClient; // Updated namespace
 
 namespace SQLMonitor
 {
@@ -45,6 +46,7 @@ namespace SQLMonitor
 
                 rad2005Native.Checked = false;
                 rad2008Native.Checked = false;
+                radMsODBC.Checked = false;
             }
         }
 
@@ -57,10 +59,11 @@ namespace SQLMonitor
 
                 rad2000ODBC.Checked = false;
                 rad2008Native.Checked = false;
+                radMsODBC.Checked = false;
             }
         }
 
-        // Select teh 2008 Driver
+        // Select the 2008 Driver
         private void rad2008Native_CheckedChanged(object sender, EventArgs e)
         {
             if (rad2008Native.Checked == true)
@@ -69,6 +72,20 @@ namespace SQLMonitor
 
                 rad2000ODBC.Checked = false;
                 rad2005Native.Checked = false;
+                radMsODBC.Checked = false;
+            }
+        }
+
+        // Select the Microsoft ODBC Driver
+        private void radMsODBC_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radMsODBC.Checked == true)
+            {
+                theDriver = "Driver={ODBC Driver 17 for SQL Server}";
+
+                rad2000ODBC.Checked = false;
+                rad2005Native.Checked = false;
+                rad2008Native.Checked = false;
             }
         }
     }

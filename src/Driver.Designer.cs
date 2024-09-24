@@ -31,9 +31,10 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOk = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.rad2000ODBC = new System.Windows.Forms.RadioButton();
-            this.rad2005Native = new System.Windows.Forms.RadioButton();
             this.rad2008Native = new System.Windows.Forms.RadioButton();
+            this.rad2005Native = new System.Windows.Forms.RadioButton();
+            this.rad2000ODBC = new System.Windows.Forms.RadioButton();
+            this.radMsODBC = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -59,12 +60,13 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.radMsODBC);
             this.groupBox1.Controls.Add(this.rad2008Native);
             this.groupBox1.Controls.Add(this.rad2005Native);
             this.groupBox1.Controls.Add(this.rad2000ODBC);
             this.groupBox1.Location = new System.Drawing.Point(10, 11);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(147, 122);
+            this.groupBox1.Size = new System.Drawing.Size(147, 150);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "SQL Driver";
@@ -104,11 +106,22 @@
             this.rad2008Native.UseVisualStyleBackColor = true;
             this.rad2008Native.CheckedChanged += new System.EventHandler(this.rad2008Native_CheckedChanged);
             // 
+            // radMsODBC
+            // 
+            this.radMsODBC.AutoSize = true;
+            this.radMsODBC.Location = new System.Drawing.Point(7, 122);
+            this.radMsODBC.Name = "radMsODBC";
+            this.radMsODBC.Size = new System.Drawing.Size(134, 17);
+            this.radMsODBC.TabIndex = 3;
+            this.radMsODBC.Text = "Microsoft ODBC Driver";
+            this.radMsODBC.UseVisualStyleBackColor = true;
+            this.radMsODBC.CheckedChanged += new System.EventHandler(this.radMsODBC_CheckedChanged);
+            // 
             // Driver
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(250, 143);
+            this.ClientSize = new System.Drawing.Size(250, 180);
             this.ControlBox = false;
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnOk);
@@ -130,5 +143,6 @@
         private System.Windows.Forms.RadioButton rad2008Native;
         private System.Windows.Forms.RadioButton rad2005Native;
         private System.Windows.Forms.RadioButton rad2000ODBC;
+        private System.Windows.Forms.RadioButton radMsODBC;
     }
 }

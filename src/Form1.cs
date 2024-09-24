@@ -20,7 +20,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
-using System.Data.Odbc;
+using Microsoft.Data.SqlClient; // Updated namespace
 using System.Diagnostics;
 using System.Drawing;
 using System.Text;
@@ -30,6 +30,7 @@ using System.IO;
 using System.Reflection;
 using System.Management;
 using Microsoft.Win32;
+using SQLMonitor;
 
 namespace SQLMonitor
 {
@@ -44,7 +45,7 @@ namespace SQLMonitor
         // Made Global in this way for performance
         Thread t, ProcCacheT;
         bool KeepRunning, UseSQLAuth, UseAltWin, IsClustered, Stopped, IsDefault, CleanupException, Loading, ExitClicked, QuickQuit;
-        OdbcConnection Conn, Conn1;
+        SqlConnection Conn, Conn1;
         string ServerName, SvrCounter, SQLUser, SQLPass, ClusterNode, SQLDriver, TrustedConnection, WinUser, WinPass;
         CPerfData PerfDat;
         public static CConfig MyappConfig;
@@ -54,7 +55,7 @@ namespace SQLMonitor
         long StartTick, EndTick;
         public static StreamWriter sw, Log, blocking;
         float SQLTargetMem, SQLTotalMem, BufferCacheSize, ProcCache, LogSpacePercent;
-        OdbcCommand blockedCmd;
+        SqlCommand blockedCmd;
         string ConnectString;
         #endregion
     
@@ -583,13 +584,29 @@ namespace SQLMonitor
 
             if (UseSQLAuth)
             {
-                Conn = new OdbcConnection("" + SQLDriver + ";Server=" + ConnectString + ";Database=master;Uid=" + SQLUser + ";Pwd=" + SQLPass + ";");
-                Conn1 = new OdbcConnection("" + SQLDriver + ";Server=" + ConnectString + ";Database=master;Uid=" + SQLUser + ";Pwd=" + SQLPass + ";");     
+                if (SQLDriver.Contains("ODBC Driver 17 for SQL Server"))
+                {
+                    Conn = new OdbcConnection("" + SQLDriver + ";Server=" + ConnectString + ";Database=master;Uid=" + SQLUser + ";Pwd=" + SQLPass + ";TrustServerCertificate=yes;");
+                    Conn1 = new OdbcConnection("" + SQLDriver + ";Server=" + ConnectString + ";Database=master;Uid=" + SQLUser + ";Pwd=" + SQLPass + ";TrustServerCertificate=yes;");     
+                }
+                else
+                {
+                    Conn = new OdbcConnection("" + SQLDriver + ";Server=" + ConnectString + ";Database=master;Uid=" + SQLUser + ";Pwd=" + SQLPass + ";");
+                    Conn1 = new OdbcConnection("" + SQLDriver + ";Server=" + ConnectString + ";Database=master;Uid=" + SQLUser + ";Pwd=" + SQLPass + ";");     
+                }
             }
             else
             {
-                Conn = new OdbcConnection("" + SQLDriver + ";Server=" + ConnectString + ";Database=master;" + TrustedConnection + ";");
-                Conn1 = new OdbcConnection("" + SQLDriver + ";Server=" + ConnectString + ";Database=master;" + TrustedConnection + ";");
+                if (SQLDriver.Contains("ODBC Driver 17 for SQL Server"))
+                {
+                    Conn = new OdbcConnection("" + SQLDriver + ";Server=" + ConnectString + ";Database=master;" + TrustedConnection + ";TrustServerCertificate=yes;");
+                    Conn1 = new OdbcConnection("" + SQLDriver + ";Server=" + ConnectString + ";Database=master;" + TrustedConnection + ";TrustServerCertificate=yes;");
+                }
+                else
+                {
+                    Conn = new OdbcConnection("" + SQLDriver + ";Server=" + ConnectString + ";Database=master;" + TrustedConnection + ";");
+                    Conn1 = new OdbcConnection("" + SQLDriver + ";Server=" + ConnectString + ";Database=master;" + TrustedConnection + ";");
+                }
             }   
 
             // define the connection timeout at 10 seconds
@@ -1022,8 +1039,6 @@ namespace SQLMonitor
                 {
                     /* DATA GATHERING & RENDERING*/
                    
-                    // Lots of optimisations here. Some unrolled loops - functions inlined etc .....
-                                        
                     #region Update Perfmon Counter Values
                     // Get the next value from each of the perfmon counters - cast where needed
                     // This loop has been unrolled for performance.  Originally a foreach loop however this
